@@ -1,14 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Container } from '@chakra-ui/react';
 import BookingList from '../components/bookings/BookingList';
+import axios from 'axios';
 
 const BookingsPage = () => {
-  // Fetch bookings data from backend API using useEffect or Redux
-  const bookings = [
-    { id: 1, propertyName: 'Hotel 1', checkInDate: '2022-01-01', checkOutDate: '2022-01-05', totalFare: 500 },
-    { id: 2, propertyName: 'Hotel 2', checkInDate: '2022-02-01', checkOutDate: '2022-02-05', totalFare: 800 },
-    { id: 3, propertyName: 'Hotel 3', checkInDate: '2022-03-01', checkOutDate: '2022-03-05', totalFare: 700 },
-  ];
+  const [bookings, setBookings] = useState([]);
+
+  useEffect(() => {
+    fetchBookings();
+  }, []);
+
+  const fetchBookings = async () => {
+    try {
+      const token = sessionStorage.getItem('token'); // Get the token from session storage
+      const response = await axios.get('http://localhost:3000/bookings', {
+        headers: {
+          Authorization: `${token}`, // Include the token in the request headers
+        },
+      });
+      setBookings(response.data);
+    } catch (error) {
+      console.error('Failed to fetch bookings:', error);
+    }
+  };
 
   return (
     <Container maxW="lg">

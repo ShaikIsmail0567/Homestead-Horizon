@@ -1,17 +1,23 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { Box, Flex, Link, Spacer } from '@chakra-ui/react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Box, Flex, Link, Spacer, Button } from '@chakra-ui/react';
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Clear user session data, tokens, or cookies here
+    sessionStorage.removeItem('token');
+    // Redirect to signin page
+    navigate('/signin');
+  };
+
+  const token = sessionStorage.getItem('token');
+  const isLoggedIn = !!token;
+
   return (
     <Flex bg="gray.200" p={4}>
       <Box>
-        <Link as={RouterLink} to="/signup" mr={4}>
-          Signup
-        </Link>
-        <Link as={RouterLink} to="/signin" mr={4}>
-          Signin
-        </Link>
         <Link as={RouterLink} to="/add-property" mr={4}>
           Add Room
         </Link>
@@ -23,7 +29,20 @@ const Navbar = () => {
         </Link>
       </Box>
       <Spacer />
-      {/* Add any additional content or user-related info here */}
+      {isLoggedIn ? (
+        <Button colorScheme="blue" onClick={handleLogout}>
+          Sign Out
+        </Button>
+      ) : (
+        <>
+          <Link as={RouterLink} to="/signin" mr={4}>
+            Sign In
+          </Link>
+          <Link as={RouterLink} to="/signup">
+            Sign Up
+          </Link>
+        </>
+      )}
     </Flex>
   );
 };

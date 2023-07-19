@@ -50,9 +50,9 @@ connection.connect((error) => {
       req.userId = decoded.userId;
       req.role = decoded.role;
 
-      if (req.role !== 'guest') {
-        return res.status(403).json({ message: 'Unauthorized access' });
-      }
+      // if (req.role !== 'guest') {
+      //   return res.status(403).json({ message: 'Unauthorized access' });
+      // }
 
       next();
     });
@@ -182,12 +182,12 @@ connection.connect((error) => {
 
   // Create a new property (hotel)
   app.post('/properties', verifyHostToken, (req, res) => {
-    const { title, description, price, picture } = req.body;
+    const { title, description, price, picture,rooms } = req.body;
     const hostId = req.hostId;
 
     // Create the property
-    const query = 'INSERT INTO properties (host_id, title, description, price, picture) VALUES (?, ?, ?, ?, ?)';
-    connection.query(query, [hostId, title, description, price, picture], (error) => {
+    const query = 'INSERT INTO properties (host_id, title, description, price, picture,rooms) VALUES (?, ?, ?, ?, ?, ?)';
+    connection.query(query, [hostId, title, description, price, picture, rooms], (error) => {
       if (error) {
         console.error('Failed to create property:', error);
         res.status(500).json({ message: 'Failed to create property' });
@@ -196,7 +196,21 @@ connection.connect((error) => {
       }
     });
   });
-
+  app.get('/host-properties', verifyHostToken, (req, res) => {
+    const hostId = req.hostId;
+  
+    // Retrieve properties for the host
+    const query = 'SELECT * FROM properties WHERE host_id = ?';
+    connection.query(query, [hostId], (error, results) => {
+      if (error) {
+        console.error('Failed to fetch properties:', error);
+        res.status(500).json({ error: 'Failed to fetch properties' });
+      } else {
+        res.status(200).json({ properties: results });
+      }
+    });
+  });
+  
   // Get all properties (hotels)
   app.get('/properties', (req, res) => {
     const { location, propertyType, host } = req.query;
@@ -308,14 +322,14 @@ connection.connect((error) => {
 
   // Create a new booking (room booking)
   app.post('/bookings', verifyGuestToken, (req, res) => {
-    const { start_date, end_date, property_id } = req.body;
+    const { start_date, end_date, property_id, rooms_booked } = req.body;
     const guestId = req.userId;
-
+  
     // Validate inputs
-    if (!start_date || !end_date || !property_id) {
+    if (!start_date || !end_date || !property_id || !rooms_booked) {
       return res.status(400).json({ error: 'Invalid input' });
     }
-
+  
     // Check if the property exists and is available for booking
     const propertyQuery = 'SELECT * FROM properties WHERE id = ?';
     connection.query(propertyQuery, [property_id], (error, propertyResults) => {
@@ -323,25 +337,25 @@ connection.connect((error) => {
         console.error('Failed to fetch property:', error);
         return res.status(500).json({ error: 'Failed to create booking' });
       }
-
+  
       if (propertyResults.length === 0) {
         return res.status(404).json({ error: 'Property not found' });
       }
-
+  
       const property = propertyResults[0];
-
+  
       // Calculate the number of days between start_date and end_date
       const startDate = new Date(start_date);
       const endDate = new Date(end_date);
       const days = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
-
+  
       if (days <= 0) {
         return res.status(400).json({ error: 'Invalid date range' });
       }
-
+  
       // Calculate the total fare for the booking
       const totalFare = days * property.price;
-
+  
       // Check if the property has available rooms for the specified date range
       const bookingQuery = 'SELECT COUNT(*) AS count FROM bookings WHERE property_id = ? AND ((start_date <= ? AND end_date > ?) OR (start_date >= ? AND start_date < ?))';
       connection.query(bookingQuery, [property_id, endDate, startDate, startDate, endDate], (error, bookingResults) => {
@@ -349,28 +363,50 @@ connection.connect((error) => {
           console.error('Failed to check property availability:', error);
           return res.status(500).json({ error: 'Failed to create booking' });
         }
-
+  
         const count = bookingResults[0].count;
         const availableRooms = property.rooms - count;
-
-        if (availableRooms <= 0) {
-          return res.status(400).json({ error: 'No available rooms for the selected date range' });
+  
+        if (availableRooms < rooms_booked) {
+          return res.status(400).json({ error: 'Not enough available rooms for the selected date range' });
         }
-
+  
         // Create the booking
-        const insertQuery = 'INSERT INTO bookings (start_date, end_date, property_id, guest_id, total_fare) VALUES (?, ?, ?, ?, ?)';
-        connection.query(insertQuery, [start_date, end_date, property_id, guestId, totalFare], (error, result) => {
-          if (error) {
-            console.error('Failed to create booking:', error);
-            return res.status(500).json({ error: 'Failed to create booking' });
+        const insertQuery =
+          'INSERT INTO bookings (start_date, end_date, property_id, guest_id, total_fare, property_name, rooms_booked, property_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+        connection.query(
+          insertQuery,
+          [start_date, end_date, property_id, guestId, totalFare, property.title, rooms_booked, property.picture],
+          (error, result) => {
+            if (error) {
+              console.error('Failed to create booking:', error);
+              return res.status(500).json({ error: 'Failed to create booking' });
+            }
+  
+            const bookingId = result.insertId;
+            res.status(201).json({ bookingId, totalFare, message: 'Booking created successfully' });
           }
-
-          const bookingId = result.insertId;
-          res.status(201).json({ bookingId, totalFare, message: 'Booking created successfully' });
-        });
+        );
       });
     });
   });
+  
+  app.get('/bookings', verifyHostToken, (req, res) => {
+    const hostId = req.hostId;
+  
+    // Retrieve bookings for the host from the database
+    const query = 'SELECT b.id, b.start_date, b.end_date, b.total_fare, b.property_name, b.rooms_booked, b.property_image FROM bookings b JOIN properties p ON b.property_id = p.id WHERE p.host_id = ?';
+    connection.query(query, [hostId], (error, results) => {
+      if (error) {
+        console.error('Failed to fetch bookings:', error);
+        res.status(500).json({ error: 'Failed to fetch bookings' });
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  });
+  
+  
 
   // Get booking details
   app.get('/bookings/:booking_id', verifyGuestToken, (req, res) => {

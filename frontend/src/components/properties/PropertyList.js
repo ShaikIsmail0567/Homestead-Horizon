@@ -9,8 +9,9 @@ const PropertyList = ({ properties }) => {
         {properties.map((property) => (
           <PropertyCard
             key={property.id}
-            imageUrl={property.imageUrl}
-            name={property.name}
+            imageUrl={property.picture}
+            name={property.title}
+            desc={property.description}
             price={property.price}
           />
         ))}
