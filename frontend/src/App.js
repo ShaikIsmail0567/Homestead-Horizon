@@ -7,6 +7,7 @@ import DashboardPage from './pages/DashboardPage';
 import AddPropertyPage from './pages/AddPropertyPage';
 import BookingsPage from './pages/BookingsPage';
 import Navbar from './components/common/Navbar';
+import MyPropertiesPage from './pages/MyPropertiesPage';
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -29,7 +30,7 @@ const App = () => {
           <Route path="/signin" element={<SigninPage handleLogin={handleLogin} />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/add-property" element={<AddPropertyPage />} />
-          <Route path="/total-properties" element={<DashboardPage />} />
+          <Route path="/total-properties" element={<MyPropertiesPage />} />
           <Route path="/bookings" element={<BookingsPage />} />
         </Routes>
       </Router>

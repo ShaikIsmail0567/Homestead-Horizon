@@ -321,75 +321,90 @@ connection.connect((error) => {
   });
 
   // Create a new booking (room booking)
-  app.post('/bookings', verifyGuestToken, (req, res) => {
-    const { start_date, end_date, property_id, rooms_booked } = req.body;
-    const guestId = req.userId;
-  
-    // Validate inputs
-    if (!start_date || !end_date || !property_id || !rooms_booked) {
-      return res.status(400).json({ error: 'Invalid input' });
+app.post('/bookings', verifyGuestToken, (req, res) => {
+  const { start_date, end_date, property_id, rooms_booked } = req.body;
+  const guestId = req.userId;
+
+  // Validate inputs
+  if (!start_date || !end_date || !property_id || !rooms_booked) {
+    return res.status(400).json({ error: 'Invalid input' });
+  }
+
+  // Check if the property exists and is available for booking
+  const propertyQuery = 'SELECT * FROM properties WHERE id = ?';
+  connection.query(propertyQuery, [property_id], (error, propertyResults) => {
+    if (error) {
+      console.error('Failed to fetch property:', error);
+      return res.status(500).json({ error: 'Failed to create booking' });
     }
-  
-    // Check if the property exists and is available for booking
-    const propertyQuery = 'SELECT * FROM properties WHERE id = ?';
-    connection.query(propertyQuery, [property_id], (error, propertyResults) => {
+
+    if (propertyResults.length === 0) {
+      return res.status(404).json({ error: 'Property not found' });
+    }
+
+    const property = propertyResults[0];
+
+    // Calculate the number of days between start_date and end_date
+    const startDate = new Date(start_date);
+    const endDate = new Date(end_date);
+    const days = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+
+    if (days <= 0) {
+      return res.status(400).json({ error: 'Invalid date range' });
+    }
+
+    // Calculate the total fare for the booking
+    const totalFare = days * property.price;
+
+    // Check if the property has available rooms for the specified date range
+    const bookingQuery = 'SELECT COUNT(*) AS count FROM bookings WHERE property_id = ? AND ((start_date <= ? AND end_date > ?) OR (start_date >= ? AND start_date < ?))';
+    connection.query(bookingQuery, [property_id, endDate, startDate, startDate, endDate], (error, bookingResults) => {
       if (error) {
-        console.error('Failed to fetch property:', error);
+        console.error('Failed to check property availability:', error);
         return res.status(500).json({ error: 'Failed to create booking' });
       }
-  
-      if (propertyResults.length === 0) {
-        return res.status(404).json({ error: 'Property not found' });
+
+      const count = bookingResults[0].count;
+      const availableRooms = property.rooms - count;
+
+      if (availableRooms < rooms_booked) {
+        return res.status(400).json({ error: 'Not enough available rooms for the selected date range' });
       }
-  
-      const property = propertyResults[0];
-  
-      // Calculate the number of days between start_date and end_date
-      const startDate = new Date(start_date);
-      const endDate = new Date(end_date);
-      const days = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
-  
-      if (days <= 0) {
-        return res.status(400).json({ error: 'Invalid date range' });
-      }
-  
-      // Calculate the total fare for the booking
-      const totalFare = days * property.price;
-  
-      // Check if the property has available rooms for the specified date range
-      const bookingQuery = 'SELECT COUNT(*) AS count FROM bookings WHERE property_id = ? AND ((start_date <= ? AND end_date > ?) OR (start_date >= ? AND start_date < ?))';
-      connection.query(bookingQuery, [property_id, endDate, startDate, startDate, endDate], (error, bookingResults) => {
-        if (error) {
-          console.error('Failed to check property availability:', error);
-          return res.status(500).json({ error: 'Failed to create booking' });
-        }
-  
-        const count = bookingResults[0].count;
-        const availableRooms = property.rooms - count;
-  
-        if (availableRooms < rooms_booked) {
-          return res.status(400).json({ error: 'Not enough available rooms for the selected date range' });
-        }
-  
-        // Create the booking
-        const insertQuery =
-          'INSERT INTO bookings (start_date, end_date, property_id, guest_id, total_fare, property_name, rooms_booked, property_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-        connection.query(
-          insertQuery,
-          [start_date, end_date, property_id, guestId, totalFare, property.title, rooms_booked, property.picture],
-          (error, result) => {
-            if (error) {
-              console.error('Failed to create booking:', error);
-              return res.status(500).json({ error: 'Failed to create booking' });
-            }
-  
-            const bookingId = result.insertId;
-            res.status(201).json({ bookingId, totalFare, message: 'Booking created successfully' });
+
+      // Create the booking
+      const insertQuery =
+        'INSERT INTO bookings (start_date, end_date, property_id, guest_id, total_fare, property_name, rooms_booked, property_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+      connection.query(
+        insertQuery,
+        [start_date, end_date, property_id, guestId, totalFare, property.title, rooms_booked, property.picture],
+        (error, result) => {
+          if (error) {
+            console.error('Failed to create booking:', error);
+            return res.status(500).json({ error: 'Failed to create booking' });
           }
-        );
-      });
+
+          const bookingId = result.insertId;
+          res.status(201).json({ bookingId, totalFare, message: 'Booking created successfully' });
+
+          // Calculate the number of booked rooms
+          const bookedRooms = count + rooms_booked;
+
+          // Calculate the updated available rooms
+          const updatedAvailableRooms = property.rooms - bookedRooms;
+          console.log(updatedAvailableRooms,bookedRooms)
+          // Update the property's available_rooms in the database
+          const updatePropertyQuery = 'UPDATE properties SET rooms = ? WHERE id = ?';
+          connection.query(updatePropertyQuery, [updatedAvailableRooms, property_id], (error, updateResult) => {
+            if (error) {
+              console.error('Failed to update property availability:', error);
+            }
+          });
+        }
+      );
     });
   });
+});
+
   
   app.get('/bookings', verifyHostToken, (req, res) => {
     const hostId = req.hostId;
