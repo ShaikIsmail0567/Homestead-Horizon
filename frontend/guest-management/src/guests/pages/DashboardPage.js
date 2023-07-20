@@ -10,6 +10,15 @@ import {
   FormControl,
   FormLabel,
   FormHelperText,
+  Flex,
+  Checkbox,
+  CheckboxGroup,
+  Wrap,
+  WrapItem,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
 } from '@chakra-ui/react';
 import PropertyCard from '../components/PropertyCard';
 
@@ -20,6 +29,9 @@ const DashboardPage = () => {
     location: '',
     minPrice: '',
     maxPrice: '',
+    numRooms: '',
+    amenities: [],
+    rating: 0,
   });
 
   // Fetch properties from the backend
@@ -35,7 +47,7 @@ const DashboardPage = () => {
     };
 
     fetchProperties();
-  }, []);
+  }, [filters, searchTerm]);
 
   // Filter properties based on search term and filters
   const filteredProperties = properties.filter((property) => {
@@ -47,8 +59,15 @@ const DashboardPage = () => {
 
     const nameMatch = searchTerm.trim() === '' || property.title.toLowerCase().includes(searchTerm.toLowerCase());
     const numRoomsMatch =
-    filters.numRooms === '' || property.rooms === parseInt(filters.numRooms, 10);
-    return locationMatch && minPriceMatch && maxPriceMatch && nameMatch && numRoomsMatch;
+      filters.numRooms === '' || property.numRooms === parseInt(filters.numRooms, 10);
+
+    const amenitiesMatch =
+      filters.amenities.length === 0 ||
+      filters.amenities.every((amenity) => property.amenities.includes(amenity));
+
+    const ratingMatch = filters.rating === 0 || property.rating >= filters.rating;
+
+    return locationMatch && minPriceMatch && maxPriceMatch && nameMatch && numRoomsMatch && amenitiesMatch && ratingMatch;
   });
 
   // Clear the search term and filters
@@ -59,8 +78,12 @@ const DashboardPage = () => {
       minPrice: '',
       maxPrice: '',
       numRooms: '',
+      amenities: [],
+      rating: 0,
     });
   };
+
+  const amenitiesOptions = ['Wi-Fi', 'Pool', 'Gym', 'Spa', 'Restaurant'];
 
   return (
     <Box p="4">
@@ -88,34 +111,66 @@ const DashboardPage = () => {
             </FormControl>
             <FormControl>
               <FormLabel>Filter by Price Range</FormLabel>
-              <Input
-                type="number"
-                placeholder="Min Price"
-                value={filters.minPrice}
-                onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
-              />
+              <Flex align="center">
+                <Input
+                  type="number"
+                  placeholder="Min Price"
+                  value={filters.minPrice}
+                  onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
+                />
+                <FormHelperText mx="2">to</FormHelperText>
+                <Input
+                  type="number"
+                  placeholder="Max Price"
+                  value={filters.maxPrice}
+                  onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
+                />
+              </Flex>
               <FormHelperText>Leave empty to include all prices.</FormHelperText>
             </FormControl>
             <FormControl>
+              <FormLabel>Number of Rooms</FormLabel>
               <Input
                 type="number"
-                placeholder="Max Price"
-                value={filters.maxPrice}
-                onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
+                placeholder="Enter number of rooms"
+                value={filters.numRooms}
+                onChange={(e) => setFilters({ ...filters, numRooms: e.target.value })}
               />
-              <FormHelperText>Leave empty to include all prices.</FormHelperText>
+              <FormHelperText>Leave empty to include all properties.</FormHelperText>
             </FormControl>
             <FormControl>
-  <FormLabel>Number of Rooms</FormLabel>
-  <Input
-    type="number"
-    placeholder="Enter number of rooms"
-    value={filters.numRooms}
-    onChange={(e) => setFilters({ ...filters, numRooms: e.target.value })}
-  />
-  <FormHelperText>Leave empty to include all properties.</FormHelperText>
-</FormControl>
-
+              <FormLabel>Filter by Amenities</FormLabel>
+              <CheckboxGroup
+                colorScheme="teal"
+                value={filters.amenities}
+                onChange={(values) => setFilters({ ...filters, amenities: values })}
+              >
+                <Wrap spacing="4">
+                  {amenitiesOptions.map((amenity) => (
+                    <WrapItem key={amenity}>
+                      <Checkbox value={amenity}>{amenity}</Checkbox>
+                    </WrapItem>
+                  ))}
+                </Wrap>
+              </CheckboxGroup>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Filter by Rating</FormLabel>
+              <Slider
+                aria-label="rating-slider"
+                min={0}
+                max={5}
+                step={0.5}
+                value={filters.rating}
+                onChange={(value) => setFilters({ ...filters, rating: value })}
+              >
+                <SliderTrack>
+                  <SliderFilledTrack />
+                </SliderTrack>
+                <SliderThumb />
+              </Slider>
+              <FormHelperText>{filters.rating.toFixed(1)}</FormHelperText>
+            </FormControl>
             {/* Search button */}
             <Button onClick={clearFilters} colorScheme="teal">
               Search

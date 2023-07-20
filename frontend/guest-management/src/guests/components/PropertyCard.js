@@ -36,9 +36,19 @@ const PropertyCard = ({ property }) => {
           {property.location}
         </Text>
       </Flex>
+     
       <Text mt="2" fontSize="md">
         {property.description}
       </Text>
+      <Flex align="center" justify="space-between" mt="2">
+        <Text size="md" >
+          Amenities : {property.amenities}
+        </Text>
+        
+      </Flex>
+      <Text fontSize="md">
+          Rating: {property.rating}
+        </Text>
       <Flex align="center" justify="space-between" mt="2">
         <Text fontSize="md">
           Rooms: {property.rooms}
