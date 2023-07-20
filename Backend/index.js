@@ -189,19 +189,24 @@ connection.connect((error) => {
 
   // Create a new property (hotel)
   app.post('/properties', verifyHostToken, (req, res) => {
-    const { title, description, price, picture,rooms,location } = req.body;
+    const { title, description, price, picture, rooms, location, amenities, rating } = req.body;
     const hostId = req.hostId;
-
+  
     // Create the property
-    const query = 'INSERT INTO properties (host_id, title, description, price, picture,rooms, location) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    connection.query(query, [hostId, title, description, price, picture, rooms, location], (error) => {
-      if (error) {
-        console.error('Failed to create property:', error);
-        res.status(500).json({ message: 'Failed to create property' });
-      } else {
-        res.status(201).json({ message: 'Property created successfully' });
+    const query =
+      'INSERT INTO properties (host_id, title, description, price, picture, rooms, location, amenities, rating) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    connection.query(
+      query,
+      [hostId, title, description, price, picture, rooms, location, amenities, rating],
+      (error) => {
+        if (error) {
+          console.error('Failed to create property:', error);
+          res.status(500).json({ message: 'Failed to create property' });
+        } else {
+          res.status(201).json({ message: 'Property created successfully' });
+        }
       }
-    });
+    );
   });
   app.get('/host-properties', verifyHostToken, (req, res) => {
     const hostId = req.hostId;
@@ -220,38 +225,38 @@ connection.connect((error) => {
   
   // Get all properties (hotels)
   app.get('/properties', (req, res) => {
-    const { location, propertyType, host } = req.query;
-
+    const { location, amenities, rating } = req.query;
+  
     // Construct the SQL query based on the provided search, filter, and sort options
     let query = 'SELECT * FROM properties';
     let conditions = [];
     let values = [];
-
+  
     if (location) {
       conditions.push('location = ?');
       values.push(location);
     }
-    if (propertyType) {
-      conditions.push('propertyType = ?');
-      values.push(propertyType);
+    if (amenities) {
+      conditions.push('amenities LIKE ?');
+      values.push(`%${amenities}%`);
     }
-    if (host) {
-      conditions.push('host = ?');
-      values.push(host);
+    if (rating) {
+      conditions.push('rating >= ?');
+      values.push(rating);
     }
-
+  
     if (conditions.length > 0) {
       query += ' WHERE ' + conditions.join(' AND ');
     }
-
+  
     // Add sorting options
     const { sortBy } = req.query;
     if (sortBy === 'location') {
       query += ' ORDER BY location ASC';
-    } else if (sortBy === 'propertyType') {
-      query += ' ORDER BY propertyType ASC';
+    } else if (sortBy === 'rating') {
+      query += ' ORDER BY rating DESC';
     }
-
+  
     // Execute the query
     connection.query(query, values, (error, results) => {
       if (error) {
@@ -266,7 +271,7 @@ connection.connect((error) => {
   // Get property details (hotel details)
   app.get('/properties/:property_id', (req, res) => {
     const { property_id } = req.params;
-
+  
     const query = 'SELECT * FROM properties WHERE id = ?';
     connection.query(query, [property_id], (error, results) => {
       if (error) {
@@ -281,7 +286,11 @@ connection.connect((error) => {
           title: results[0].title,
           description: results[0].description,
           price: results[0].price,
-          picture: results[0].picture
+          picture: results[0].picture,
+          rooms: results[0].rooms,
+          location: results[0].location,
+          amenities: results[0].amenities,
+          rating: results[0].rating,
         };
         res.json(property);
       }
@@ -290,22 +299,27 @@ connection.connect((error) => {
 
   // Update property details (hotel details)
   app.put('/properties/:property_id', verifyHostToken, (req, res) => {
-    const { title, description, price, picture } = req.body;
+    const { title, description, price, picture, rooms, location, amenities, rating } = req.body;
     const propertyId = req.params.property_id;
     const hostId = req.hostId;
-
+  
     // Update the property
-    const query = 'UPDATE properties SET title = ?, description = ?, price = ?, picture = ? WHERE id = ? AND host_id = ?';
-    connection.query(query, [title, description, price, picture, propertyId, hostId], (error, results) => {
-      if (error) {
-        console.error('Failed to update property:', error);
-        res.status(500).json({ message: 'Failed to update property' });
-      } else if (results.affectedRows === 0) {
-        res.status(404).json({ message: 'Property not found or unauthorized access' });
-      } else {
-        res.json({ message: 'Property updated successfully' });
+    const query =
+      'UPDATE properties SET title = ?, description = ?, price = ?, picture = ?, rooms = ?, location = ?, amenities = ?, rating = ? WHERE id = ? AND host_id = ?';
+    connection.query(
+      query,
+      [title, description, price, picture, rooms, location, amenities, rating, propertyId, hostId],
+      (error, results) => {
+        if (error) {
+          console.error('Failed to update property:', error);
+          res.status(500).json({ message: 'Failed to update property' });
+        } else if (results.affectedRows === 0) {
+          res.status(404).json({ message: 'Property not found or unauthorized access' });
+        } else {
+          res.json({ message: 'Property updated successfully' });
+        }
       }
-    });
+    );
   });
 
   // Delete a property (hotel)

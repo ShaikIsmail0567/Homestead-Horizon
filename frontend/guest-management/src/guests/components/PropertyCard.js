@@ -3,54 +3,53 @@ import {
   Box,
   Flex,
   Image,
-  Badge,
   Heading,
   Text,
   Button,
-  useToast,
+  useColorModeValue,
 } from '@chakra-ui/react';
 
 const PropertyCard = ({ property }) => {
-  const toast = useToast();
-
-  const handleBook = () => {
-    // Replace this function with your booking logic
-    // For now, let's just show a toast message when the "Book" button is clicked
-    toast({
-      title: 'Booking',
-      description: `You booked ${property.title}`,
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-  };
-
+  const cardBgColor = useColorModeValue('white', 'gray.800');
+//   console.log('Property:', property);
   return (
-    <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p="4">
-      <Image src={property.picture} alt={property.title} height="200px" objectFit="cover" />
-      <Box p="4">
-        <Heading as="h3" size="md" mb="2">
+    <Box
+      p="4"
+      shadow="md"
+      borderWidth="1px"
+      borderRadius="md"
+      bgColor={cardBgColor}
+      width="100%"
+    >
+      <Image
+        src={property.picture} // Replace with the URL of the property image
+        alt={property.title} // Replace with the title of the property
+        height="200px"
+        objectFit="cover"
+        borderRadius="md"
+      />
+      <Flex align="center" justify="space-between" mt="2">
+        <Heading size="md" fontWeight="semibold">
           {property.title}
         </Heading>
-        <Text fontSize="sm" color="gray.500" mb="2">
+        <Text fontSize="md" color="gray.600">
           {property.location}
         </Text>
-        <Text fontSize="md" mb="4">
-          {property.description}
+      </Flex>
+      <Text mt="2" fontSize="md">
+        {property.description}
+      </Text>
+      <Flex align="center" justify="space-between" mt="2">
+        <Text fontSize="md">
+          Rooms: {property.rooms}
         </Text>
-        <Flex align="center" justify="space-between">
-        <Text fontSize="md" align="center" mb="4">
-          Available Rooms : {property.rooms}
+        <Text fontSize="md">
+          Price: {property.price} INR
         </Text>
-          <Badge colorScheme="teal" fontSize="md">
-            Price : ${property.price}
-          </Badge>
-         
-        </Flex>
-        <Button onClick={handleBook} align="center" colorScheme="blue">
-            Book
-          </Button>
-      </Box>
+      </Flex>
+      <Button mt="4" colorScheme="teal">
+        Book Now
+      </Button>
     </Box>
   );
 };
