@@ -1,13 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import { Flex, Box, Button, Spacer } from '@chakra-ui/react';
 
 const GuestNavbar = ({ isLoggedIn, handleLogout }) => {
+  const navigate = useNavigate();
   const handleSignout = () => {
     // Clear the guestToken from session storage and perform logout logic
     sessionStorage.removeItem('guestToken');
     sessionStorage.removeItem('guestName');
+
     handleLogout();
+    navigate('/signin');
   };
 
   return (
