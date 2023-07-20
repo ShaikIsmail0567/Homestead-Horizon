@@ -138,7 +138,7 @@ connection.connect((error) => {
           console.error('Failed to register user:', error);
           res.status(500).json({ message: 'Failed to register user' });
         } else {
-          res.status(201).json({ message: 'User registered successfully' });
+          res.status(201).json({ message: 'User registered successfully',name,success:true});
         }
       });
     });
@@ -162,7 +162,9 @@ connection.connect((error) => {
       }
 
       const user = results[0];
+      
 
+      
       // Compare the password
       bcrypt.compare(password, user.password, (error, isMatch) => {
         if (error) {
@@ -171,7 +173,12 @@ connection.connect((error) => {
         } else if (isMatch) {
           // Passwords match, generate a token
           const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET);
-          res.json({ token });
+          const query1='SELECT name FROM guests WHERE email = ?';
+           connection.query(query1, [email], (error, results) => {
+          const name=results[0]
+          res.status(200).json({ success: true, token , name});
+           })
+          
         } else {
           // Passwords don't match
           res.status(401).json({ message: 'Invalid credentials' });
@@ -182,12 +189,12 @@ connection.connect((error) => {
 
   // Create a new property (hotel)
   app.post('/properties', verifyHostToken, (req, res) => {
-    const { title, description, price, picture,rooms } = req.body;
+    const { title, description, price, picture,rooms,location } = req.body;
     const hostId = req.hostId;
 
     // Create the property
-    const query = 'INSERT INTO properties (host_id, title, description, price, picture,rooms) VALUES (?, ?, ?, ?, ?, ?)';
-    connection.query(query, [hostId, title, description, price, picture, rooms], (error) => {
+    const query = 'INSERT INTO properties (host_id, title, description, price, picture,rooms, location) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    connection.query(query, [hostId, title, description, price, picture, rooms, location], (error) => {
       if (error) {
         console.error('Failed to create property:', error);
         res.status(500).json({ message: 'Failed to create property' });
