@@ -7,6 +7,7 @@ import DashboardPage from './guests/pages/DashboardPage';
 import GuestNavbar from './guests/components/GuestNavbar';
 import HotelDetailsPage from './guests/pages/HotelDetailsPage';
 import BookingsPage from './guests/pages/BookingsPage';
+import Home from './guests/pages/homepage';
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!sessionStorage.getItem('guestToken'));
 
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/signup" element={<GuestSignupPage handleLogin={handleLogin} />} />
           <Route path="/signin" element={<GuestSigninPage handleLogin={handleLogin} />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/" element={<Home />} />
           <Route path="/bookings" element={<BookingsPage />} />
           <Route path="/hotels/:property_id" element={<HotelDetailsPage/>} />
           {/* Add other guest management routes here */}

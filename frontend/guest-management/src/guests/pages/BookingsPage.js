@@ -240,7 +240,7 @@ const BookingsPage = () => {
         }
       );
       const data = await response.json();
-        console.log(data)
+        
       if (response.ok) {
         // Booking updated successfully, update the bookings list
         setBookings((prevBookings) =>
@@ -255,6 +255,7 @@ const BookingsPage = () => {
               : booking
           )
         );
+        alert("Booking Updated Successfully")
       } else {
         console.error("Failed to update booking:", data);
         alert("Failed to update booking. Please try again.");

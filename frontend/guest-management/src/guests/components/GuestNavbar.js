@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Flex, Box, Button, Spacer } from '@chakra-ui/react';
 
 const GuestNavbar = ({ isLoggedIn, handleLogout }) => {
@@ -22,6 +22,23 @@ const GuestNavbar = ({ isLoggedIn, handleLogout }) => {
           </Button>
         </Link>
       </Box>
+      {/* <Spacer /> */}
+      <Box>
+        {/* Add the "Dashboard" button */}
+        <Link to="/dashboard">
+          <Button colorScheme="white" variant="link" mr="4"  margin-left= "20px">
+            Dashboard
+          </Button>
+        </Link>
+        </Box>
+        {/* Add the "Bookings" button */}
+        <Box>
+        <Link to="/bookings">
+          <Button colorScheme="white" variant="link">
+            Bookings
+          </Button>
+        </Link>
+        </Box>
       <Spacer />
       {isLoggedIn ? (
         <>
