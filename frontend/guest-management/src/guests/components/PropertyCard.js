@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   Box,
   Flex,
@@ -13,6 +14,7 @@ const PropertyCard = ({ property }) => {
   const cardBgColor = useColorModeValue('white', 'gray.800');
 //   console.log('Property:', property);
   return (
+    <Link to={`/hotels/${property.id}`}>
     <Box
       p="4"
       shadow="md"
@@ -61,6 +63,7 @@ const PropertyCard = ({ property }) => {
         Book Now
       </Button>
     </Box>
+    </Link>
   );
 };
 

@@ -4,11 +4,9 @@ import { ChakraProvider, CSSReset } from '@chakra-ui/react';
 import GuestSignupPage from './guests/pages/GuestSignupPage';
 import GuestSigninPage from './guests/pages/GuestSigninPage';
 import DashboardPage from './guests/pages/DashboardPage';
-// import GuestAddPropertyPage from './pages/GuestAddPropertyPage';
-// import GuestBookingsPage from './pages/GuestBookingsPage';
 import GuestNavbar from './guests/components/GuestNavbar';
-// import GuestMyPropertiesPage from './pages/GuestMyPropertiesPage';
-
+import HotelDetailsPage from './guests/pages/HotelDetailsPage';
+import BookingsPage from './guests/pages/BookingsPage';
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!sessionStorage.getItem('guestToken'));
 
@@ -31,6 +29,8 @@ const App = () => {
           <Route path="/signup" element={<GuestSignupPage handleLogin={handleLogin} />} />
           <Route path="/signin" element={<GuestSigninPage handleLogin={handleLogin} />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/bookings" element={<BookingsPage />} />
+          <Route path="/hotels/:property_id" element={<HotelDetailsPage/>} />
           {/* Add other guest management routes here */}
         </Routes>
       </Router>
