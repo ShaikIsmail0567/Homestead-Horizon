@@ -49,6 +49,8 @@ const BookingsPage = () => {
   const [expiryMonth, setExpiryMonth] = useState("");
   const [expiryYear, setExpiryYear] = useState("");
   const [cvv, setCvv] = useState("");
+  const [paymentAmount, setPaymentAmount] = useState(0);
+
   useEffect(() => {
     const fetchBookings = async () => {
       try {
@@ -134,34 +136,41 @@ const BookingsPage = () => {
     newRoomsBooked
   ) => {
     try {
-      const originalBooking = bookings.find(
-        (booking) => booking.id === bookingId
-      );
-      const originalEndDate = new Date(originalBooking.end_date);
-      const selectedEndDate = new Date(newEndDate);
-      if (
-        selectedEndDate > originalEndDate ||
-        newRoomsBooked > originalBooking.rooms_booked
-      ) {
-        // Calculate the number of extra days and payment required
-        const extraDays = Math.floor(
-          (selectedEndDate - originalEndDate) / (1000 * 60 * 60 * 24)
-        );
-        const paymentRequired = extraDays * originalBooking.total_fare;
+      const originalBooking = bookings.find((booking) => booking.id === bookingId);
+    const originalEndDate = new Date(originalBooking.end_date);
+    const selectedEndDate = new Date(newEndDate);
+    const originalRoomsBooked = originalBooking.rooms_booked;
+    const originalTotalFare = originalBooking.total_fare;
 
-        // Set the payment details and open the payment modal
-        setSelectedBookingId(bookingId);
-        setShowPaymentModal(true);
-      } else {
-        // Proceed with the update directly
-        await updateBookingDetails(
-          bookingId,
-          newStartDate,
-          newEndDate,
-          newRoomsBooked
-        );
-      }
-    } catch (error) {
+    let extraDays = 0;
+    let extraRooms = 0;
+
+    // Calculate the number of extra days if end_date is extended
+    if (selectedEndDate > originalEndDate) {
+      extraDays = Math.floor((selectedEndDate - originalEndDate) / (1000 * 60 * 60 * 24));
+    }
+
+    // Calculate the number of extra rooms if rooms_booked is increased
+    if (newRoomsBooked > originalRoomsBooked) {
+      extraRooms = newRoomsBooked - originalRoomsBooked;
+    }
+
+    // Calculate the extra amount required to pay based on extra days and extra rooms
+    const extraDaysAmount = originalBooking.total_fare * extraDays;
+    const extraRoomsAmount = originalBooking.total_fare * extraRooms;
+    const totalExtraAmount = extraDaysAmount + extraRoomsAmount;
+
+    // Show the payment modal only if there is an extra amount to be paid
+    if (totalExtraAmount > 0) {
+      setPaymentAmount(totalExtraAmount);
+      setSelectedBookingId(bookingId);
+      setShowPaymentModal(true);
+    } else {
+      // If no extra amount, directly update the booking details
+      await updateBookingDetails(bookingId, newStartDate, newEndDate, newRoomsBooked);
+    }
+      } 
+     catch (error) {
       console.error("Error updating booking:", error);
       alert(
         "An error occurred while updating the booking. Please try again later."
@@ -346,6 +355,7 @@ const BookingsPage = () => {
             <ModalHeader>Enter Credit Card Details</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
+            <Text mb="4">Amount to Pay: ₹ {paymentAmount}</Text>
               <FormControl>
                 <FormLabel>Card Number</FormLabel>
                 <Input
