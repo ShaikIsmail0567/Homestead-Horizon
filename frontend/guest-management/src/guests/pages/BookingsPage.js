@@ -103,7 +103,7 @@ const BookingsPage = () => {
   const [expiryMonth, setExpiryMonth] = useState("");
   const [expiryYear, setExpiryYear] = useState("");
   const [cvv, setCvv] = useState("");
-
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   useEffect(() => {
     const fetchBookings = async () => {
       try {
@@ -158,9 +158,12 @@ const BookingsPage = () => {
       );
     }
 
-    onClose(); // Close the delete confirmation modal
+    setIsDeleteModalOpen(false);  // Close the delete confirmation modal
   };
-
+  const onCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setSelectedBookingId(null); // Reset selectedBookingId when the delete modal is closed
+  };
   const handleUpdateBooking = async (
     bookingId,
     newStartDate,
@@ -183,10 +186,12 @@ const BookingsPage = () => {
         setShowModal(true);
       } else {
         // Proceed with the update directly
+        const startDate = new Date(newStartDate).toISOString();
+        const endDate = new Date(newEndDate).toISOString();
         await updateBookingDetails(
           bookingId,
-          newStartDate,
-          newEndDate,
+          startDate,
+          endDate,
           newRoomsBooked
         );
       }
@@ -331,16 +336,16 @@ const BookingsPage = () => {
                   colorScheme="red"
                   onClick={() => {
                     setSelectedBookingId(booking.id);
-                    onOpen();
+                    isDeleteModalOpen();
                   }}
                 >
                   Delete
                 </Button>
               </Flex>
               <AlertDialog
-                isOpen={isOpen && selectedBookingId === booking.id}
+                isOpen={isDeleteModalOpen}
                 leastDestructiveRef={cancelRef}
-                onClose={onClose}
+                onClose={onCloseDeleteModal}
               >
                 <AlertDialogOverlay>
                   <AlertDialogContent>

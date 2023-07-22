@@ -52,23 +52,34 @@ const DashboardPage = () => {
   // Filter properties based on search term and filters
   const filteredProperties = properties.filter((property) => {
     const locationMatch =
-      filters.location === '' || property.location.toLowerCase().includes(filters.location.toLowerCase());
-
+      filters.location === '' ||
+      (property.location?.toLowerCase().includes(filters.location.toLowerCase()) || false);
+  
     const minPriceMatch = filters.minPrice === '' || property.price >= parseInt(filters.minPrice, 10);
     const maxPriceMatch = filters.maxPrice === '' || property.price <= parseInt(filters.maxPrice, 10);
-
-    const nameMatch = searchTerm.trim() === '' || property.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const numRoomsMatch =
-      filters.numRooms === '' || property.numRooms === parseInt(filters.numRooms, 10);
-
-    const amenitiesMatch =
+  
+    const nameMatch =
+      searchTerm.trim() === '' || property.title.toLowerCase().includes(searchTerm.toLowerCase());
+      const numRoomsMatch =
+      filters.numRooms === '' || (Number.isInteger(property.rooms) && property.rooms === parseInt(filters.numRooms, 10));
+  
+      const amenitiesMatch =
       filters.amenities.length === 0 ||
-      filters.amenities.every((amenity) => property.amenities.includes(amenity));
-
+      filters.amenities.every((amenity) => property.amenities?.includes(amenity) ?? false);
+  
     const ratingMatch = filters.rating === 0 || property.rating >= filters.rating;
-
-    return locationMatch && minPriceMatch && maxPriceMatch && nameMatch && numRoomsMatch && amenitiesMatch && ratingMatch;
+  
+    return (
+      locationMatch &&
+      minPriceMatch &&
+      maxPriceMatch &&
+      nameMatch &&
+      numRoomsMatch &&
+      amenitiesMatch &&
+      ratingMatch
+    );
   });
+  
 
   // Clear the search term and filters
   const clearFilters = () => {
