@@ -79,27 +79,61 @@ const GuestSigninPage = ({ handleLogin }) => {
 
   return (
     <Flex align="center" justify="center" h="100vh">
-      <Box bg="gray.100" p={8} borderRadius="md" shadow="md" width="400px">
+      <Box bg="blue.50" p={8} borderRadius="md" shadow="md" boxShadow="0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)" width="400px">
         <Heading mb={6}>Guest Signin</Heading>
         <form onSubmit={handleSubmit}>
           <FormControl mb={4}>
             <FormLabel>Email</FormLabel>
             <Input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
+           placeholder="Enter your email"
+           type="email"
+           name="email"
+           value={formData.email}
+           onChange={handleChange}
+           required
+           bg="white"
+           border="2px solid"
+           borderColor="gray.300"
+           borderRadius="md"
+           px={4}
+           py={2}
+           _focus={{
+             outline: 'none',
+             borderColor: 'blue.500',
+             boxShadow: '0 0 0 2px rgba(0, 102, 255, 0.3)',
+           }}
+           _hover={{
+             borderColor: 'gray.500',
+           }}
             />
           </FormControl>
           <FormControl mb={4}>
             <FormLabel>Password</FormLabel>
             <Input
+            placeholder="Enter your Password"
+           
+           
+            onChange={handleChange}
+            required
+            bg="white"
+            border="2px solid"
+            borderColor="gray.300"
+            borderRadius="md"
+            px={4}
+            py={2}
+            _focus={{
+              outline: 'none',
+              borderColor: 'blue.500',
+              boxShadow: '0 0 0 2px rgba(0, 102, 255, 0.3)',
+            }}
+            _hover={{
+              borderColor: 'gray.500',
+            }}
               type="password"
               name="password"
               value={formData.password}
-              onChange={handleChange}
-              required
+            
+             
             />
           </FormControl>
           <Button type="submit" colorScheme="blue">
