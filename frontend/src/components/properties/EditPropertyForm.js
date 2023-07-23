@@ -18,6 +18,7 @@ const EditPropertyForm = ({ property, isOpen, onClose }) => {
         title: property.title,
         description: property.description,
         price: property.price,
+        rooms:property.rooms
       });
       setImageUrl(property.picture);
     }
@@ -82,6 +83,13 @@ const EditPropertyForm = ({ property, isOpen, onClose }) => {
                 placeholder="Description"
                 mb={4}
                 value={formData.description}
+                onChange={handleChange}
+              />
+              <Input
+                name="rooms"
+                placeholder="Available Rooms"
+                mb={4}
+                value={formData.rooms}
                 onChange={handleChange}
               />
               <Input

@@ -15,9 +15,12 @@ const BookingList = ({ bookings }) => {
               <Heading as="h3" size="md" mb={2}>
                 {booking.property_name}
               </Heading>
+              <Text>Guest Name: {booking.name}</Text>
+              <Text>Phone Number: {booking.number}</Text>
               <Text>Check-in Date: {new Date(booking.start_date).toLocaleDateString()}</Text>
               <Text>Check-out Date: {new Date(booking.end_date).toLocaleDateString()}</Text>
               <Text>Total Fare: ${Number(booking.total_fare).toFixed(2)}</Text>
+              <Text>couponCode: {booking.coupon_code}</Text>
               <Text>Rooms Booked: {booking.rooms_booked}</Text>
             </Box>
           </ListItem>

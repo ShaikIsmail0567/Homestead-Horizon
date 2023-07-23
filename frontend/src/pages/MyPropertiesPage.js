@@ -78,10 +78,14 @@ const MyPropertiesPage = () => {
                     {property.title}
                   </Text>
                   <Text>{property.description}</Text>
+                  
+                  <Text>Amenities : {property.amenities}</Text>
+                  
                   <Flex justify="space-between" mt={4}>
                     <Text>Rooms: {property.rooms}</Text>
                     <Text>Price: ${property.price}</Text>
                   </Flex>
+                  <Text>Rating : {property.rating}</Text>
                 </Box>
                 
               <Flex p={4} justify="space-between">

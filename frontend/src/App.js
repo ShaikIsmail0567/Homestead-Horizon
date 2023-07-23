@@ -8,7 +8,7 @@ import AddPropertyPage from './pages/AddPropertyPage';
 import BookingsPage from './pages/BookingsPage';
 import Navbar from './components/common/Navbar';
 import MyPropertiesPage from './pages/MyPropertiesPage';
-
+import Home from './pages/homepage';
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -32,6 +32,7 @@ const App = () => {
           <Route path="/add-property" element={<AddPropertyPage />} />
           <Route path="/total-properties" element={<MyPropertiesPage />} />
           <Route path="/bookings" element={<BookingsPage />} />
+          <Route path="/" element={<Home />} />
         </Routes>
       </Router>
     </ChakraProvider>
