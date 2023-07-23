@@ -13,7 +13,7 @@ const BookingsPage = () => {
   const fetchBookings = async () => {
     try {
       const token = sessionStorage.getItem('token'); // Get the token from session storage
-      const response = await axios.get('http://localhost:3000/host/bookings', {
+      const response = await axios.get('https://eager-duck-tuxedo.cyclic.app/host/bookings', {
         headers: {
           Authorization: `${token}`, // Include the token in the request headers
         },

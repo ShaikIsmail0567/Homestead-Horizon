@@ -35,7 +35,7 @@ const GuestSigninPage = ({ handleLogin }) => {
       // Your API call for guest signin here
       // For demonstration purposes, let's assume the signin is successful
       // and we get a data with the guest's name and a token
-      const response = await fetch('http://localhost:3000/users/login', {
+      const response = await fetch('https://eager-duck-tuxedo.cyclic.app/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

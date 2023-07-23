@@ -12,7 +12,7 @@ const SignupForm = () => {
 
   const handleSignup = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/hosts/register', { name, email, password });
+      const response = await axios.post('https://eager-duck-tuxedo.cyclic.app/hosts/register', { name, email, password });
       toast({
         title: 'Success',
         description: response.data.message,

@@ -13,7 +13,7 @@ const MyPropertiesPage = () => {
     // Fetch properties data from backend API
     const fetchProperties = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/host-properties', {
+        const response = await axios.get('https://eager-duck-tuxedo.cyclic.app/host-properties', {
           headers: {
             Authorization: `${sessionStorage.getItem('token')}`,
           },
@@ -29,7 +29,7 @@ const MyPropertiesPage = () => {
 
   const handleDeleteProperty = async (propertyId) => {
     try {
-        const response = await axios.delete(`http://localhost:3000/properties/${propertyId}`, {
+        const response = await axios.delete(`https://eager-duck-tuxedo.cyclic.app/properties/${propertyId}`, {
           headers: {
             Authorization: `${sessionStorage.getItem('token')}`,
           },
