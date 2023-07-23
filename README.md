@@ -9,7 +9,8 @@ This project is a comprehensive hotel management platform that includes both hos
 Deployed App
 ------------
 
-The application is deployed and accessible at: [https://deployed-site.whatever](https://deployed-site.whatever)
+The guest side application is deployed and accessible at: [https://hotel-guest.netlify.app/](https://hotel-guest.netlify.app/)
+The host side application is deployed and accessible at: [https://hotel-host.netlify.app/](https://hotel-host.netlify.app/)
 
 Video Walkthrough of the Project
 --------------------------------
