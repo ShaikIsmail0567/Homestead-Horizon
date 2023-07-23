@@ -41,19 +41,88 @@ const PropertyForm = () => {
 
   return (
     <Box>
-      <Heading as="h2" size="lg" mb={4}>
+      <Heading as="h2" size="lg" mb={4} color="white">
         Add Property
       </Heading>
-      <Input placeholder="title" mb={4} value={title} onChange={(e) => settitle(e.target.value)} />
+      <Input placeholder="title" mb={4} value={title} onChange={(e) => settitle(e.target.value)} 
+       bg="white"
+       border="2px solid"
+       borderColor="gray.300"
+       borderRadius="md"
+       px={4}
+       py={2}
+       _focus={{
+         outline: "none",
+         borderColor: "blue.500",
+         boxShadow: "0 0 0 2px rgba(0, 102, 255, 0.3)",
+       }}
+       _hover={{
+         borderColor: "gray.500",
+       }}
+      
+       />
       <Input
         placeholder="Description"
         mb={4}
         value={description}
         onChange={(e) => setDescription(e.target.value)}
+        bg="white"
+        border="2px solid"
+        borderColor="gray.300"
+        borderRadius="md"
+        px={4}
+        py={2}
+        _focus={{
+          outline: "none",
+          borderColor: "blue.500",
+          boxShadow: "0 0 0 2px rgba(0, 102, 255, 0.3)",
+        }}
+        _hover={{
+          borderColor: "gray.500",
+        }}
       />
-      <Input placeholder="Price" mb={4} value={price} onChange={(e) => setPrice(e.target.value)} />
-      <Input placeholder="Picture" mb={4} value={picture} onChange={(e) => setPicture(e.target.value)} />
-      <Input placeholder="Rooms" mb={4} value={rooms} onChange={(e) => setRooms(e.target.value)} />
+      <Input placeholder="Price" mb={4} value={price} onChange={(e) => setPrice(e.target.value)} bg="white"
+              border="2px solid"
+              borderColor="gray.300"
+              borderRadius="md"
+              px={4}
+              py={2}
+              _focus={{
+                outline: "none",
+                borderColor: "blue.500",
+                boxShadow: "0 0 0 2px rgba(0, 102, 255, 0.3)",
+              }}
+              _hover={{
+                borderColor: "gray.500",
+              }} />
+      <Input placeholder="Picture" mb={4} value={picture} onChange={(e) => setPicture(e.target.value)} bg="white"
+              border="2px solid"
+              borderColor="gray.300"
+              borderRadius="md"
+              px={4}
+              py={2}
+              _focus={{
+                outline: "none",
+                borderColor: "blue.500",
+                boxShadow: "0 0 0 2px rgba(0, 102, 255, 0.3)",
+              }}
+              _hover={{
+                borderColor: "gray.500",
+              }} />
+      <Input placeholder="Rooms" mb={4} value={rooms} onChange={(e) => setRooms(e.target.value)} bg="white"
+              border="2px solid"
+              borderColor="gray.300"
+              borderRadius="md"
+              px={4}
+              py={2}
+              _focus={{
+                outline: "none",
+                borderColor: "blue.500",
+                boxShadow: "0 0 0 2px rgba(0, 102, 255, 0.3)",
+              }}
+              _hover={{
+                borderColor: "gray.500",
+              }} />
       <Button colorScheme="blue" onClick={handleAddProperty}>
         Add Property
       </Button>

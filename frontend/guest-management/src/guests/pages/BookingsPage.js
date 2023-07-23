@@ -238,10 +238,10 @@ const BookingsPage = () => {
 
   return (
     <Box p="4">
-      <Heading size="lg" mb="4">
+      <Heading  textAlign="center"size="lg" mb="4">
         Your Bookings
       </Heading>
-      <Flex flexWrap="wrap" justifyContent="space-between">
+      <Flex  flexWrap="wrap" justifyContent="space-between">
         {bookings && bookings.length > 0 ? (
           bookings.map((booking) => (
             <Box
@@ -250,65 +250,61 @@ const BookingsPage = () => {
               borderWidth="1px"
               borderRadius="md"
               mb="4"
+             
               width={{ base: "100%", md: "48%" }}
+              bg="blue.50"
+              boxShadow="md"
             >
-              <Flex align="center" mb="4">
-                <Image
-                  src={booking.property_image}
-                  alt={booking.property_name}
-                  height="150px"
-                  objectFit="cover"
-                  borderRadius="md"
-                  mr="4"
-                />
-                <Box>
-                  <Text fontSize="xl">Booking ID: {booking.id}</Text>
-                  <Text mt="2">Property Name: {booking.property_name}</Text>
-                </Box>
-              </Flex>
-              <Box>
-                <Text mt="2">
-                  Check-in Date:{" "}
-                  {new Date(booking.start_date).toLocaleDateString()}
-                </Text>
-                <Text mt="2">
-                  Check-out Date:{" "}
-                  {new Date(booking.end_date).toLocaleDateString()}
-                </Text>
-
-                <Text mt="2">
-                  Number of Rooms Booked: {booking.rooms_booked}
-                </Text>
-                <Text mt="2">Total Fare: ₹ {booking.total_fare}</Text>
-                {booking.coupon_code && (
-                  <>
-                    <Text mt="2">Coupon Code: {booking.coupon_code}</Text>
-                    <Text mt="2">
-                      Discounted Price: ₹ {booking.discounted_price}
-                    </Text>
-                  </>
-                )}
-              </Box>
-              <Flex mt="4" justifyContent="space-between">
-                <Link to={`/hotels/${booking.property_id}`}>
-                  <Button colorScheme="blue">View Details</Button>
-                </Link>
-                <Button
-                  colorScheme="green"
-                  onClick={() => handleEditBooking(booking.id)}
-                >
-                  Edit
-                </Button>
-                <Button
-                  colorScheme="red"
-                  onClick={() => {
-                    setSelectedBookingId(booking.id);
-                    onOpenDeleteModal();
-                  }}
-                >
-                  Delete
-                </Button>
-              </Flex>
+                <Box  borderRadius="md" p="4" width="100%">
+      <Flex align="center" mb="4">
+        <Image
+          src={booking.property_image}
+          alt={booking.property_name}
+          height="200px"
+          objectFit="cover"
+          borderRadius="md"
+          mr="4"
+        />
+        <Box>
+          <Text fontSize="xl">Booking ID: {booking.id}</Text>
+          <Text mt="2">Property Name: {booking.property_name}</Text>
+          <Text mt="2">
+            Check-in Date: {new Date(booking.start_date).toLocaleDateString()}
+          </Text>
+          <Text mt="2">
+            Check-out Date: {new Date(booking.end_date).toLocaleDateString()}
+          </Text>
+          <Text mt="2">Number of Rooms Booked: {booking.rooms_booked}</Text>
+          <Text mt="2">Total Fare: ₹ {booking.total_fare}</Text>
+          {booking.coupon_code && (
+            <>
+              <Text mt="2">Coupon Code: {booking.coupon_code}</Text>
+              <Text mt="2">Discounted Price: ₹ {booking.discounted_price}</Text>
+            </>
+          )}
+        </Box>
+      </Flex>
+      <Flex mt="4" justifyContent="space-between" alignItems="center">
+        <Link to={`/hotels/${booking.property_id}`}>
+          <Button colorScheme="blue">View Details</Button>
+        </Link>
+        <Box>
+          <Button colorScheme="green" onClick={() => handleEditBooking(booking.id)}>
+            Edit
+          </Button>
+          <Button
+            colorScheme="red"
+            onClick={() => {
+              setSelectedBookingId(booking.id);
+              onOpenDeleteModal();
+            }}
+            ml="2"
+          >
+            Delete
+          </Button>
+        </Box>
+      </Flex>
+    </Box>
               <AlertDialog
                 isOpen={isDeleteModalOpen && selectedBookingId === booking.id}
                 leastDestructiveRef={cancelRef}

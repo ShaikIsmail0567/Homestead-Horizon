@@ -17,7 +17,7 @@ const GuestNavbar = ({ isLoggedIn, handleLogout }) => {
     <Flex bg="blue.500" p="4" alignItems="center">
       <Box>
         <Link to="/">
-          <Button colorScheme="white" variant="link">
+          <Button colorScheme="white" variant="primary" _hover={{ backgroundColor: 'blue.300', color: 'white' }}>
             Guest Management
           </Button>
         </Link>
@@ -26,7 +26,7 @@ const GuestNavbar = ({ isLoggedIn, handleLogout }) => {
       <Box>
         {/* Add the "Dashboard" button */}
         <Link to="/dashboard">
-          <Button colorScheme="white" variant="link" mr="4"  margin-left= "20px">
+          <Button colorScheme="white" variant="primary" mr="4"  margin-left= "20px" _hover={{ backgroundColor: 'blue.300', color: 'white' }}>
             Dashboard
           </Button>
         </Link>
@@ -34,7 +34,7 @@ const GuestNavbar = ({ isLoggedIn, handleLogout }) => {
         {/* Add the "Bookings" button */}
         <Box>
         <Link to="/bookings">
-          <Button colorScheme="white" variant="link">
+          <Button colorScheme="white" variant="primary" _hover={{ backgroundColor: 'blue.300', color: 'white' }} >
             Bookings
           </Button>
         </Link>
@@ -44,12 +44,12 @@ const GuestNavbar = ({ isLoggedIn, handleLogout }) => {
         <>
           <Box mr="4">
             {/* Show guest name after successful signin */}
-            <Button colorScheme="white" variant="link">
+            <Button colorScheme="white" variant="primary" _hover={{ backgroundColor: 'blue.300', color: 'white' }}>
               {sessionStorage.getItem('guestName')}
             </Button>
           </Box>
           <Box mr="4">
-            <Button colorScheme="white" variant="link" onClick={handleSignout}>
+            <Button colorScheme="white" variant="primary" _hover={{ backgroundColor: 'blue.300', color: 'white' }} onClick={handleSignout}>
               Sign Out
             </Button>
           </Box>
@@ -58,14 +58,14 @@ const GuestNavbar = ({ isLoggedIn, handleLogout }) => {
         <>
           <Box mr="4">
             <Link to="/signin">
-              <Button colorScheme="white" variant="link">
+              <Button colorScheme="white" variant="primary" _hover={{ backgroundColor: 'blue.300', color: 'white' }}>
                 Sign In
               </Button>
             </Link>
           </Box>
           <Box>
             <Link to="/signup">
-              <Button colorScheme="white" variant="link">
+              <Button colorScheme="white" variant="primary" _hover={{ backgroundColor: 'blue.300', color: 'white' }}>
                 Sign Up
               </Button>
             </Link>
