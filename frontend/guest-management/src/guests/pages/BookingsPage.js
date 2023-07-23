@@ -55,7 +55,7 @@ const BookingsPage = () => {
     const fetchBookings = async () => {
       try {
         const guestToken = sessionStorage.getItem("guestToken");
-        const response = await fetch("http://localhost:3000/bookings", {
+        const response = await fetch("https://eager-duck-tuxedo.cyclic.app/bookings", {
           headers: {
             Authorization: guestToken,
           },
@@ -86,7 +86,7 @@ const BookingsPage = () => {
       const endDate = new Date(newEndDate).toISOString().split("T")[0];
       const guestToken = sessionStorage.getItem("guestToken");
       const response = await fetch(
-        `http://localhost:3000/bookings/${bookingId}`,
+        `https://eager-duck-tuxedo.cyclic.app/bookings/${bookingId}`,
         {
           method: "PUT",
           headers: {
@@ -206,7 +206,7 @@ const BookingsPage = () => {
     try {
       const guestToken = sessionStorage.getItem("guestToken");
       const response = await fetch(
-        `http://localhost:3000/bookings/${selectedBookingId}`,
+        `https://eager-duck-tuxedo.cyclic.app/bookings/${selectedBookingId}`,
         {
           method: "DELETE",
           headers: {

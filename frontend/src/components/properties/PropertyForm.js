@@ -14,7 +14,7 @@ const PropertyForm = () => {
 
   const handleAddProperty = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/properties', { title, description, price, picture, rooms }, {
+      const response = await axios.post('https://eager-duck-tuxedo.cyclic.app/properties', { title, description, price, picture, rooms }, {
         headers: {
             Authorization: `${sessionStorage.getItem('token')}`,
         }

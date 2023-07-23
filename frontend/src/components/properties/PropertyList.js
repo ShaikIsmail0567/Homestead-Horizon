@@ -9,7 +9,7 @@ const PropertyCard = ({ property, onEdit, onDelete }) => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3000/properties/${property.id}`);
+      await axios.delete(`https://eager-duck-tuxedo.cyclic.app/properties/${property.id}`);
       onDelete(property.id);
       toast({
         title: 'Success',

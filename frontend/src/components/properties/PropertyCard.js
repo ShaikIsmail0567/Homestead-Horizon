@@ -10,7 +10,7 @@ const PropertyCard = ({ property, onDelete, onEdit }) => { // Pass onEdit as a p
 
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`http://localhost:3000/properties/${property.id}`);
+      const response = await axios.delete(`https://eager-duck-tuxedo.cyclic.app/properties/${property.id}`);
       if (response.data.message === 'Property deleted successfully') {
         onDelete(property.id);
       }
