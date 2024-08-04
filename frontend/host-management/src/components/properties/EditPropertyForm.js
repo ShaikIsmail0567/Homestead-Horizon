@@ -35,7 +35,7 @@ const EditPropertyForm = ({ property, isOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`https://eager-duck-tuxedo.cyclic.app/properties/${property.id}`, {
+      await axios.put(`https://horizon-backend-two.vercel.app/properties/${property.id}`, {
         ...formData,
         picture: imageUrl, // Include the updated image URL in the request
       }, {

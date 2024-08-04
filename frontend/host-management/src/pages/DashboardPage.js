@@ -9,7 +9,7 @@ const DashboardPage = () => {
     // Fetch properties data from backend API
     const fetchProperties = async () => {
       try {
-        const response = await axios.get('https://eager-duck-tuxedo.cyclic.app/host-properties', {
+        const response = await axios.get('https://horizon-backend-two.vercel.app/host-properties', {
           headers: {
             Authorization: `${sessionStorage.getItem('token')}`,
           },

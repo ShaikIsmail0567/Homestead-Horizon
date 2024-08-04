@@ -86,7 +86,7 @@ const HotelDetailsPage = ({ match }) => {
   useEffect(() => {
     const fetchProperty = async () => {
       try {
-        const response = await fetch(`https://eager-duck-tuxedo.cyclic.app/properties/${property_id}`);
+        const response = await fetch(`https://horizon-backend-two.vercel.app/properties/${property_id}`);
         const data = await response.json();
         setProperty(data);
       } catch (error) {
@@ -108,7 +108,7 @@ const HotelDetailsPage = ({ match }) => {
         discountedPrice = (totalFare * (100 - DISCOUNT_PERCENTAGE)) / 100;
       }
       setDiscountedPrice(discountedPrice);
-      const response = await fetch('https://eager-duck-tuxedo.cyclic.app/bookings', {
+      const response = await fetch('https://horizon-backend-two.vercel.app/bookings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

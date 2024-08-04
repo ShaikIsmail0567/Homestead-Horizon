@@ -38,7 +38,7 @@ const DashboardPage = () => {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const response = await fetch("https://eager-duck-tuxedo.cyclic.app/properties");
+        const response = await fetch("https://horizon-backend-two.vercel.app/properties");
         const data = await response.json();
         setProperties(data);
       } catch (error) {
